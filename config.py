@@ -1,7 +1,7 @@
 import os
 
 def cifar10dir():
-    return 'V:\\CorporaCopies\\CIFAR-10\\cifar-10-batches-py\\'
+    return os.environ['CIFAR10_LOCAL']
 
 def cifar10batchnames():
     return ['data_batch_1', 'data_batch_2', 'data_batch_3', 'data_batch_4', 'data_batch_5']
