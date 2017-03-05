@@ -76,9 +76,12 @@ correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess.run(tf.global_variables_initializer())
 
+testsize = 1000
+idx = random.sample(range(10000), testsize)
+
 testbatch = cifar10readtest()
-testdata = testbatch['data']
-testlabels = testbatch['labels']
+testdata = testbatch['data'][idx,:]
+testlabels = [testbatch['labels'][k] for k in idx]
 
 # перебираем большие файлы корпуса
 batchsize = 100
@@ -91,8 +94,11 @@ for i in range(100):
         #labels = np.reshape(labels, [batchsize, 1])
         if j%100 == 0:
             train_accuracy = accuracy.eval(feed_dict={x: batch, l: labels, keep_prob: 1.0})
-            test_accuracy = accuracy.eval(feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})
-            print("bigbatch %d (%d), step %d, training accuracy %g, test accuracy %g"%(i, i%5, j, train_accuracy, test_accuracy))
+            print("bigbatch %d (%d), step %d, training accuracy %g"%(i, i%5, j, train_accuracy))
+            if j%1000 == 0:
+                test_accuracy = accuracy.eval(feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})
+                print("bigbatch %d (%d), step %d, training accuracy %g, test accuracy %g"%(i, i%5, j, train_accuracy, test_accuracy))
+
         train_step.run(feed_dict={x: batch, l: labels, keep_prob: 0.5})
 
 for i in range(5):
