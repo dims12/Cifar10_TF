@@ -35,7 +35,13 @@ def max_pool_2x2(x):
 
 
 
-sess = tf.InteractiveSession()
+#sess = tf.InteractiveSession()
+sess = tf.Session()
+
+# to reproduce pathway
+np.random.seed(0)
+tf.set_random_seed(0)
+random.seed(0)
 
 x = tf.placeholder(tf.float32, shape=[None, 1024*3])
 l = tf.placeholder(tf.uint8, shape=[None])
@@ -93,18 +99,18 @@ for i in range(100):
         labels = [bigbatch['labels'][k] for k in idx]
         #labels = np.reshape(labels, [batchsize, 1])
         if j%100 == 0:
-            train_accuracy = accuracy.eval(feed_dict={x: batch, l: labels, keep_prob: 1.0})
+            train_accuracy = sess.run(accuracy, feed_dict={x: batch, l: labels, keep_prob: 1.0})
             print("bigbatch %d (%d), step %d, training accuracy %g"%(i, i%5, j, train_accuracy))
             if j%1000 == 0:
-                test_accuracy = accuracy.eval(feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})
+                test_accuracy = sess.run(accuracy, feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})
                 print("bigbatch %d (%d), step %d, training accuracy %g, test accuracy %g"%(i, i%5, j, train_accuracy, test_accuracy))
 
-        train_step.run(feed_dict={x: batch, l: labels, keep_prob: 0.5})
+        sess.run(train_step, feed_dict={x: batch, l: labels, keep_prob: 0.5})
 
 for i in range(5):
     bigbatch = cifar10readfile(cifar10batches()[i])
-    print("bigbatch %d gave accuracy %g"%(i, accuracy.eval(feed_dict={x: bigbatch['data'], l: bigbatch['labels'], keep_prob: 1.0})))
+    print("bigbatch %d gave accuracy %g"%(i, sess.run(accuracy, feed_dict={x: bigbatch['data'], l: bigbatch['labels'], keep_prob: 1.0})))
 
-print("test gave accuracy %g"%(accuracy.eval(feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})))
+print("test gave accuracy %g"%(sess.run(accuracy, feed_dict={x: testdata, l: testlabels, keep_prob: 1.0})))
 
 
