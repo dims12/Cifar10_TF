@@ -65,16 +65,21 @@ h_pool2 = max_pool_2x2(h_conv2)
 W_fc1 = weight_variable([8 * 8 * 64, 1024])
 b_fc1 = bias_variable([1024])
 
-h_pool2_flat = tf.reshape(h_pool2, [-1, 8*8*64])
-h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
-
 keep_prob = tf.placeholder(tf.float32)
-h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+W_fc1_droped = tf.nn.dropout(W_fc1, keep_prob)
+
+
+h_pool2_flat = tf.reshape(h_pool2, [-1, 8*8*64])
+#h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
+h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1_droped) + b_fc1)
+
+#h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
 W_fc2 = weight_variable([1024, 10])
 b_fc2 = bias_variable([10])
 
-y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+#y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+y_conv = tf.matmul(h_fc1, W_fc2) + b_fc2
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y_conv))
 train_step = tf.train.AdamOptimizer(1e-5).minimize(cross_entropy)
@@ -82,7 +87,7 @@ correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess.run(tf.global_variables_initializer())
 
-testsize = 1000
+testsize = 50
 idx = random.sample(range(10000), testsize)
 
 testbatch = cifar10readtest()
