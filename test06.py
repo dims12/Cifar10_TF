@@ -1,7 +1,6 @@
 # подбираю преобразование кучи картинок
 # при произвольной длине пакета
 
-from cifar10 import *
 from config import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,7 +14,7 @@ x1 = tf.reshape(x0, [-1, 3, 1024])
 x2 = tf.transpose(x1, [0, 2, 1])
 x3 = tf.reshape(x2, [-1, 32, 32, 3])
 
-batch = unpickle(cifar10batches()[0])
+batch = cifar10readfile(cifar10batches()[0])
 
 imagessize = 10
 images = batch['data'][0:imagessize, :]

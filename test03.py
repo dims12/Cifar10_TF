@@ -1,6 +1,5 @@
 # подбираю преобразование для картинки в tensorflow
 
-from cifar10 import *
 from config import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +13,7 @@ x1 = tf.reshape(x0, [3, 1024])
 x2 = tf.transpose(x1)
 x3 = tf.reshape(x2, [32, 32, 3])
 
-batch = unpickle(cifar10batches()[0])
+batch = cifar10readfile(cifar10batches()[0])
 
 for i in range(10000):
 

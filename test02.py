@@ -1,12 +1,11 @@
 # подбираю преобразование для получения картинки в numpy
 
-from cifar10 import *
 from config import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-batch = unpickle(cifar10batches()[0])
+batch = cifar10readfile(cifar10batches()[0])
 
 for i in range(10000):
 
